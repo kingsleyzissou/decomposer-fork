@@ -17,7 +17,8 @@
       "@gen/cloudapi/*": ["./generated/cloudapi/v2/*"],
       "@gen/decomposer": ["./generated/decomposer/v2"],
       "@gen/ibcrc": ["./generated/ibcrc/v1"],
-      "@gen/ibcrc/*": ["./generated/ibcrc/v1/*"]
+      "@gen/ibcrc/*": ["./generated/ibcrc/v1/*"],
+      "@fixtures": ["./src/__fixtures__"]
     }
   },
   "include": ["./src", "./tools"]
