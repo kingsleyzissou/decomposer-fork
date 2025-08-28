@@ -2,8 +2,11 @@ import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 
+import { notFound, onError } from '@app/errors';
+
 const middleware = new Hono()
-  .notFound((c) => c.json({ message: 'Not Found', ok: false }, 404))
+  .notFound(notFound)
+  .onError(onError)
   .use(prettyJSON())
   .use(logger());
 
