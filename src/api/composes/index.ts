@@ -4,7 +4,7 @@ import Maybe from 'true-myth/maybe';
 import type { AppContext } from '@app/types';
 
 import { paginate } from '../pagination';
-import type { Compose, ComposeId, Composes } from './types';
+import type { Compose, ComposeId, ComposeStatus, Composes } from './types';
 import * as validators from './validators';
 
 export const composes = new Hono<AppContext>()
@@ -44,6 +44,26 @@ export const composes = new Hono<AppContext>()
     return result.match({
       Ok: ({ id }) => {
         return ctx.json<ComposeId>({ id });
+      },
+      Err: (error) => {
+        const { body, code } = error.response();
+        return ctx.json(body, code);
+      },
+    });
+  })
+
+  /**
+   * curl --unix-socket /run/decomposer-httpd.sock \
+   * -X GET 'http://localhost/api/image-builder-composer/v2/compose/123e4567-e89b-12d3-a456-426655440000'
+   */
+  .get('/composes/:id', async (ctx) => {
+    const id = ctx.req.param('id');
+    const { compose: service } = ctx.get('services');
+    const result = await service.status(id);
+
+    return result.match({
+      Ok: (status) => {
+        return ctx.json<ComposeStatus>(status);
       },
       Err: (error) => {
         const { body, code } = error.response();

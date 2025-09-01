@@ -5,10 +5,12 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { validate } from 'uuid';
 
+import { Status } from '@app/constants';
+
 import { composeRequest } from '@fixtures';
 import { createTestClient, createTestStore } from '@fixtures';
 
-import type { Composes } from './types';
+import type { ComposeStatus, Composes } from './types';
 
 describe('Composes handler tests', async () => {
   const tmp = await mkdtemp(path.join(tmpdir(), 'decomposer-test'));
@@ -18,6 +20,8 @@ describe('Composes handler tests', async () => {
   afterAll(async () => {
     await rmdir(tmp, { recursive: true });
   });
+
+  let newCompose = '';
 
   it('GET /composes should initially be empty', async () => {
     const res = await client.composes.$get();
@@ -35,6 +39,7 @@ describe('Composes handler tests', async () => {
     });
     expect(res.status).toBe(StatusCodes.OK);
     const { id } = await res.json();
+    newCompose = id;
     expect(validate(id)).toBeTrue();
   });
 
@@ -46,5 +51,22 @@ describe('Composes handler tests', async () => {
     expect(body.meta.count).toBe(1);
     expect(body.data).not.toBeUndefined();
     expect(body.data.length).toBe(1);
+  });
+
+  it('GET /composes/:id should get the compose status', async () => {
+    const res = await client.composes[':id'].$get({
+      param: {
+        id: newCompose,
+      },
+    });
+    expect(res.status).toBe(StatusCodes.OK);
+    const body = (await res.json()) as ComposeStatus;
+    expect(body).not.toBeUndefined();
+    expect(body.image_status.status).toBe(Status.PENDING);
+  });
+
+  it('GET /composes/:id for non-existing compose should return 404', async () => {
+    const res = await client.composes[':id'].$get({ param: { id: '123' } });
+    expect(res.status).toBe(StatusCodes.NOT_FOUND);
   });
 });
