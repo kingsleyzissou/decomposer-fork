@@ -62,7 +62,7 @@ describe('Composes handler tests', async () => {
     expect(res.status).toBe(StatusCodes.OK);
     const body = (await res.json()) as ComposeStatus;
     expect(body).not.toBeUndefined();
-    expect(body.image_status.status).toBe(Status.PENDING);
+    expect(body.image_status.status).toBe(Status.BUILDING);
   });
 
   it('GET /composes/:id for non-existing compose should return 404', async () => {
