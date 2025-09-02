@@ -56,22 +56,6 @@ Or in a .env file:
 STORE_PATH=/custom/path/to/store
 ```
 
-## API Endpoints
-
-The server exposes the following endpoints on `/api/image-builder-composer/v2`:
-
-### Meta Endpoints
-
-- `GET /api/image-builder-composer/v2/ready` - Health check endpoint
-- `GET /api/image-builder-composer/v2/openapi.json` - OpenAPI specification
-
-Example curl request:
-
-```bash
-curl --unix-socket /run/decomposer-httpd.sock \
-  --request GET 'http://localhost/api/image-builder-composer/v2/ready'
-```
-
 ### Socket Location
 
 The server listens on a Unix socket at `/run/decomposer-httpd.sock` with permissions set to `775` for multi-user access.

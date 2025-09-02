@@ -1,0 +1,2 @@
+GET /run/decomposer-httpd.sock:/api/image-builder-composer/v2/openapi.json HTTP/1.1
+User-Agent: curl/8.x
